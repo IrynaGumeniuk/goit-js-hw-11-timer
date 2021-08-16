@@ -1,6 +1,6 @@
 class Timer {
     constructor({ selector, targetDate }) {
-        this.selector = selector;
+        this.selector = document.querySelector(selector);
         this.targetDate = targetDate;
 
         this.refs = {
@@ -10,12 +10,24 @@ class Timer {
             minutesTimer: document.querySelector(`${selector} [data-value="mins"]`),
             secondsTimer: document.querySelector(`${selector} [data-value="secs"]`),
         };
+        this.init();
         this.start();
     }
 
+    init() {
+        const time = this.getTimeComponents(0);
+        this.updateClock(time);
+    }
+
     start() {
-        setInterval(() => {
+        this.timeIntervalId = setInterval(() => {
             const deltaTime = this.targetDate - Date.now();
+
+            if (deltaTime <= 0) {
+                clearInterval(this.timeIntervalId);
+                return;
+            }
+
             this.updateClock(this.getTimeComponents(deltaTime));
         }, 1000);
     }
@@ -42,5 +54,5 @@ function pad(value) {
 }
 const CountDownTimer = new Timer({
     selector: '#timer-1',
-    targetDate: new Date('Feb 9, 2022'),
+    targetDate: new Date('Feb 09, 2022'),
 });
